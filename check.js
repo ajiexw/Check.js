@@ -5,6 +5,8 @@ var sdy_submit = true;
 //验证文案
 var checkTexts = {
     notempty: "此处不能为空",
+    min: "数字不能小于", //min、max使用之前必须先验证数字类型
+    max: "数字不能大于",
     minlen: "字符长度不能小于",
     maxlen: "字符长度不能大于",
     betweenlen: "字符长度必须大于",
@@ -13,6 +15,7 @@ var checkTexts = {
     zint: "该字符必须为正整数",
     num: "该字符必须为数字",
     float: "该字符必须为小数",
+    float_maxlen: "小数位数不能超过",
     zfloat: "该字符必须为正浮点数",
     zfloat_zero: "该字符必须为非负浮点数",
     zip: "请填写正确的邮政编码",
@@ -29,7 +32,10 @@ var checkTexts = {
     num_letter: "此处只能填写英文字母、数字、下划线",
     numletter: "此处只能填写英文字母、数字",
     cnnumletter: "此处只能填写中文、英文字母、数字",
+    idcard: "请填写正确的身份证号",
     notequal: "不能为",
+    pwd1: "密码不能为空",
+    pwd2: "两次输入密码不一致",
 }
 
 //正则
@@ -51,7 +57,7 @@ var checkRegexs = {
     color: "^[a-fA-F0-9]{6}$", //颜色
     date: "^\\d{4}(\\-|\\/|\.)\\d{1,2}\\1\\d{1,2}$", //日期
     email: "^\\w+((-\\w+)|(\\.\\w+))*\\@[A-Za-z0-9]+((\\.|-)[A-Za-z0-9]+)*\\.[A-Za-z0-9]+$", //邮件
-    idcard: "^[1-9]([0-9]{14}|[0-9]{17})$", //身份证
+    idcard: "^[1-9]([0-9]{14}|[0-9]{17}|[0-9]{16}[x,X])$", //身份证
     ip4: "^(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)$", //ip地址
     letter: "^[A-Za-z]+$", //字母
     letter_l: "^[a-z]+$", //小写字母
@@ -83,6 +89,12 @@ var checkRegexs = {
 var checkRules = {
     isNull: function(str) {
         return $.trim(str) == "";
+    },
+    min: function(str, val) {
+        return Number(str) < Number(val);
+    },
+    max: function(str, val) {
+        return Number(str) > Number(val);
     },
     minLen: function(str, len) {
         return $.trim(str).length < parseInt(len);
@@ -120,6 +132,13 @@ var checkRules = {
     isPositiveDecmalAndZero: function(str) {
         return new RegExp(checkRegexs.positiveDecmalAndZero).test(str);
     },
+    floatMaxLen: function(str, len) {
+        if(str.indexOf(".") != -1){
+            return str.split(".")[1].length > parseInt(len);
+        }else{
+            return false;
+        }
+    },
     isUrl: function(str) {
         return new RegExp(checkRegexs.url).test(str);
     },
@@ -156,6 +175,9 @@ var checkRules = {
     isCnNumberLetter: function(str) {
         return new RegExp(checkRegexs.cnnumberletter).test(str);
     },
+    isIdCard: function(str) {
+        return new RegExp(checkRegexs.idcard).test(str);
+    },
     notEqual: function(str, val) {
         return $.trim(str) != val;
     },
@@ -173,6 +195,9 @@ var checkRules = {
     },
     simplePwd: function(str) {
         return pwdLevel(str) == 1;
+    },
+    isEqualPwd1: function(str){
+        return str == $("[check*=pwd1]").val();
     }
 };
 
@@ -234,6 +259,12 @@ function switchType(obj, type, val, params){
         case "notempty":
             isChecked = !checkRules.isNull(val);
             break;
+        case "min": 
+            isChecked = !checkRules.min(val, params.val);
+            break;
+        case "max": 
+            isChecked = !checkRules.max(val, params.val);
+            break;
         case "minlen": 
             isChecked = !checkRules.minLen(val, params.val);
             break;
@@ -260,6 +291,9 @@ function switchType(obj, type, val, params){
             break;
         case "float": 
             isChecked = checkRules.isDecmal(val);
+            break;
+        case "float_maxlen": 
+            isChecked = !checkRules.floatMaxLen(val, params.val);
             break;
         case "zfloat": 
             isChecked = checkRules.isPositiveDecmal(val);
@@ -306,8 +340,17 @@ function switchType(obj, type, val, params){
         case "cnnumletter": 
             isChecked = checkRules.isCnNumberLetter(val);
             break;
+        case "idcard": 
+            isChecked = checkRules.isIdCard(val);
+            break;
         case "notequal": 
             isChecked = checkRules.notEqual(val, params.val);
+            break;
+        case "pwd1":
+            isChecked = !checkRules.isNull(val);
+            break;
+        case "pwd2":
+            isChecked = checkRules.isEqualPwd1(val);
             break;
         default:
           return;
@@ -363,7 +406,7 @@ function sdyCheckSubmit(){
     var formId = arguments[0] ? arguments[0] : "";
 
     //提交表单时对"必填、没有隐藏、不为空有值的input、textarea"验证
-     $(formId + " input[type=text], textarea").filter("[check]:visible").filter(function(index){
+     $(formId + " input[type=text], input[type=password], textarea").filter("[check]:visible").filter(function(index){
         return $(this).is("[check*=required]") || $(this).val() != "";
      }).trigger("blur");
      //提交表单时对"必填的checkbox、select"验证，
@@ -374,7 +417,7 @@ function sdyCheckSubmit(){
 }
 
 $(function(){
-    $("input[type=text][check], textarea[check]").live("blur",function(){
+    $("input[type=text][check],  input[type=password][check], textarea[check]").live("blur",function(){
         checkVal(this);
     });
 
