@@ -92,13 +92,16 @@
     <textarea check="notempty[msg=产品介绍不能为空];minlen[val=20]"></textarea>
     
     表单提交时checkbox必须选中	
-    <input type="checkbox" name="agreement" check="required;notempty[location=agreeid,msg=请接受服务条款]">
+    <input type="checkbox" name="agreement" 
+    check="required;notempty[location=agreeid,msg=请接受服务条款]">
     我已阅读并同意《啥都有用户注册协议》
     <span id="agreeid"></span>
     
     checkbox不能为空	
-    <input type="checkbox" name="companyType" check="required;notempty[location=companyType,msg=企业类型不能为空]"> 国有
-    <input type="checkbox" name="companyType" check="required;notempty[location=companyType,msg=企业类型不能为空]"> 民营
+    <input type="checkbox" name="companyType" 
+    check="required;notempty[location=companyType,msg=企业类型不能为空]"> 国有
+    <input type="checkbox" name="companyType" 
+    check="required;notempty[location=companyType,msg=企业类型不能为空]"> 民营
     <span id="companyType"></span>
     
     表单提交时radio必须有值	
