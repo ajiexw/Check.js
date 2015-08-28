@@ -1,6 +1,8 @@
 表单验证库 Check.js
 ========
 
+##Example
+
     //此处不能为空
     <input type="text" id="ceshi" check="required;notempty">
     
@@ -126,3 +128,8 @@
     密码验证	
     <input type="password" class="mid" check="required;pwd1">
     <input type="password" class="mid" check="required;pwd2">
+
+##Form Submit
+
+    当前页面只有一个表单需要验证时：if(sdyCheckSubmit()){}
+    当前页面有一个以上表单需要验证时：if(sdyCheckSubmit("#formId")){}
