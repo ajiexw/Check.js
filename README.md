@@ -48,7 +48,7 @@
     
     请填写正确的链接	
     <input type="text" check="url">
-    请填写正确的链接
+    
     请填写正确的中文格式	
     <input type="text" check="cn">
     
@@ -87,3 +87,40 @@
     
     不能等于-1	
     <input type="text" check="notequal[val=-1]">
+    
+    此处不能为空，字符长度必须大于或等于	
+    <textarea check="notempty[msg=产品介绍不能为空];minlen[val=20]"></textarea>
+    
+    表单提交时checkbox必须选中	
+    <input type="checkbox" name="agreement" check="required;notempty[location=agreeid,msg=请接受服务条款]">
+    我已阅读并同意《啥都有用户注册协议》
+    <span id="agreeid"></span>
+    
+    checkbox不能为空	
+    <input type="checkbox" name="companyType" check="required;notempty[location=companyType,msg=企业类型不能为空]"> 国有
+    <input type="checkbox" name="companyType" check="required;notempty[location=companyType,msg=企业类型不能为空]"> 民营
+    <span id="companyType"></span>
+    
+    表单提交时radio必须有值	
+    <input type="radio" name="sex" check="required;notempty[location=sex]">  男
+    <input type="radio" name="sex" check="required;notempty[location=sex]">  女
+    <span id="sex"></span>
+    
+    select不能为空	
+    性别：
+    <select check="notempty[msg=性别不能为空]">
+        <option value="">请选择</option>
+        <option value="2">1</option>
+        <option value="2">2</option>
+    </select>
+    
+    select不能为空	
+    <select check="notequal[msg=性别不能为空,val=0]">
+        <option value="0">请选择</option>
+        <option value="2">1</option>
+        <option value="2">2</option>
+    </select>
+    
+    密码验证	
+    <input type="password" class="mid" check="required;pwd1">
+    <input type="password" class="mid" check="required;pwd2">
