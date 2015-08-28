@@ -132,4 +132,5 @@
 ##Form Submit
 
     当前页面只有一个表单需要验证时：if(sdyCheckSubmit()){}
+    
     当前页面有一个以上表单需要验证时：if(sdyCheckSubmit("#formId")){}
