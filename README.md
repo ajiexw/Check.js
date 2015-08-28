@@ -110,7 +110,6 @@
     <span id="sex"></span>
     
     select不能为空	
-    性别：
     <select check="notempty[msg=性别不能为空]">
         <option value="">请选择</option>
         <option value="2">1</option>
